@@ -1,0 +1,247 @@
+body {
+#	background-image: url("../img/page-fade-bg.gif");
+	background-repeat: repeat-x;
+	margin: 0px; padding: 0px;
+}
+
+img {
+	border: 0px none;
+}
+
+.page {
+	margin: 0px 50px;
+	background-color: #FFF; color: #656565;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+.post {
+	margin: 25px 120px 25px 25px;
+}
+.content .photo {
+	float: left;
+	margin: 0px 20px 0px 0px;
+}
+
+.header {
+#	border-left: 1px solid #E7EAF1;
+#	border-right: 1px solid #E7EAF1;
+#	background-image: url("../img/header-bg-fade.jpg");
+#	background-repeat: repeat-x;
+	margin: 10px;
+}
+
+.header .photo {
+	float: right;
+	display: block;
+	border-left: 1px solid #E7EAF1;
+	margin-left: 10px;
+}
+
+.login {
+	height: 20px;
+	border-bottom: 1px solid #E7EAF1;
+	text-align: right;
+	background-color: transparent; color: #FFF;
+	font-weight: bold;
+	line-height: 20px;
+}
+
+.login a { color: #FFF; background-color: transparent; }
+
+.topnav {
+	margin: 0px;
+	padding: 0px;
+	list-style-type: none;
+	height: 18px;
+	padding-left: 10px;
+	background-color: transparent; color: #FFF;
+}
+.topnav li { display: inline; margin-right: 15px; }
+.topnav a { text-decoration: none; background-color: transparent; color: #FFF; }
+.topnav a:hover { text-decoration: underline; }
+
+.main {
+	margin: 0px; padding: 0px;	
+}
+
+.sidebar {
+	float: left;
+	width: 180px;
+}
+.sidebar ul {
+	list-style-type: none;
+	margin: 20px 0px 0px 0px; padding: 0px;
+}
+.sidebar li {
+	padding-left: 10px;
+	margin-bottom: 15px;
+}
+.sidebar a {
+	background-color: transparent;
+	color: #656565;
+	text-decoration: none;
+}
+.sidebar a:hover { text-decoration: underline; }
+a.current { color: #A30013; background-color: transparent; }
+
+.calendar a { color: #FFF; background-color: transparent; }
+
+.calendar td { padding: 2px 4px; }
+
+.content {
+	margin-left: 180px;
+	padding: 10px;
+}
+
+.footer {
+	clear: both;
+	line-height: 50px;
+	padding-left: 190px;
+	background-color: transparent;
+	color: #9CA8BE;
+}
+.footer img { 
+	position: relative; 
+	top: 5px; 
+	padding-right: 5px; 
+}
+
+h1 {
+	margin: 0px 0px 10px 0px;
+	font-size: 24px;
+	font-family: Georgia, "Times New Roman";
+	font-weight: normal;
+	color: #A30013; background-color: transparent;
+}
+
+h2 {
+	margin: 0px 0px 10px 0px;
+	font-size: 18px;
+	font-family: Georgia,  "Times New Roman", Times, serif;
+	font-weight: normal;
+	color: #A30013; background-color: transparent;
+}
+
+h3, h4, h5, h6, h7 {
+	margin: 0px 0px 8px 0px;
+	font-size: 11px;
+}
+
+p {
+	margin: 0px 0px 10px 0px;
+}
+
+.frow {
+	margin-bottom: 15px;
+}
+.fleft {
+	font-weight: bold;
+	margin-bottom: 3px;
+}
+.fright {
+}
+
+.datahead {
+	background-color: #9CA8BE;
+	color: #FFF;
+}
+
+#WebpageContent {
+	width: 95%;
+}
+
+.profilephoto {
+	float: left;
+	padding: 3px;
+	border: 1px solid #9CA8BE;
+	margin: 0px 10px 10px 0px;
+	display: block;
+}
+
+.err {
+	background-color: transparent;
+	color: #F00;
+	font-weight: bold;
+}
+
+.fr {
+	float: right;
+}
+.fl {
+	float: left;
+}
+.block { display: block; }
+.right { text-align: right; }
+w100 { width: 100%; } w95 { width: 95%; } w90 { width: 90%; } w85 { width: 85%; } w80 { width: 80%; } w75 { width: 75%; } w70 { width: 70%; } w65 { width: 65%; } w60 { width: 60%; } w55 { width: 55%; }
+w50 { width: 50%; } w45 { width: 45%; } w40 { width: 40%; } w35 { width: 35%; } w30 { width: 30%; } w25 { width: 25%; } w20 { width: 20%; } w15 { width: 15%; } w10 { width: 10%; } w5 { width: 5%; }
+.nowrap { white-space: nowrap; }
+.floatr { float: right; }
+.floatl { float: left; }
+
+.facnav {
+	margin: 10px 0px; padding: 5px 0px;
+	border-width: 1px 0px;
+	border-color: #E7EAF1;
+	border-style: solid;
+	line-height: 20px;
+	list-style-type: none;
+}
+.facnav li {
+	display: inline;
+	margin: 0px 10px 0px 0px;
+}
+.facnav li .facnav-contents {
+	white-space: nowrap;
+}
+.facnav a {
+	background-color: transparent;
+	color: #656565;
+	text-decoration: none;
+	
+}
+.facnav a:hover { text-decoration: underline; }
+
+.profile_content {
+	margin-bottom: 20px;
+}
+
+.emp {
+	color: #f00;
+	font-size: 20px;
+}
+
+.error_message { color: #F00; background-color: transparent; }
+
+#flashMessage {
+	background: #fec;
+	color: #600;
+	padding:0.25em;
+}
+
+.fmdb_keyval_row {
+	display: block;
+	float: left;
+	clear: both;
+}
+
+.fmdb_key, .fmdb_val {
+	display: inline;
+	float: left;
+	padding: 4px;
+	margin: 4px;
+}
+
+.fmdb_key {
+	font-weight: bold;
+}
+
+.fmdb_clear {
+	display: block;
+	clear: both;
+}
+
+.webNote {
+    color: #f00;
+    font-style: italic;
+}

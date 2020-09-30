@@ -1,0 +1,8 @@
+	  <h1>Contact</h1>
+	  <b>Address:</b>
+	  1-5 Yamadaoka, Suita, Osaka 565-0871, Japan<br>
+	  <br>
+	  <b>E-Mail:</b>
+  	<img src="resources/email.png"> <br>
+	  <b>Tel:</b> +81-6-6879-4535<br>
+	  <b>Fax:</b> +81-6-6879-4539<br>

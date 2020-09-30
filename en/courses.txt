@@ -1,0 +1,12 @@
+	  <h1>Courses</h1>
+	  <ul>
+          <li>
+          Concurrent Systems 
+          </li>
+          <li>
+          Dependable Systems 
+          </li>
+	  <li>
+          Introduction to Information Science 
+          </li>
+	  </ul>

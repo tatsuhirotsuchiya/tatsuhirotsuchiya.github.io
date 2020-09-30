@@ -1,0 +1,8 @@
+	  <b>住所:</b>
+	  565-0871 大阪府吹田市山田丘1-5
+          情報科学A棟 <br>
+	  <br>
+	  <b>E-Mail:</b>
+  	<img src="resources/email.png"> <br>
+	  <b>Tel:</b> 06-6879-4535<br>
+	  <b>Fax:</b> 06-6879-4539<br>

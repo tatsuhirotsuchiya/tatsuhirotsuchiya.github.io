@@ -1,0 +1,10 @@
+	  <h1>Books</h1>
+	  <h2>Dependable Systems</h2>
+	  <img src="resources/book_dependable.jpg" width=100 alt="Book: Dependable Systems">
+	  <p>Tomohiro Yoneda, Seiji Kajihara, and Tatsuhiro Tsuchiya,
+	    Dependable Systems, ISBN: 978-4320121522, Kyoritsu Shuppan, Tokyo, 2005. (Japanese)</p>
+	  <h2>A Gentle Introduction to Computer Algorithms</h2>
+	  <img src="resources/book_algorithm.jpg" width=120 alt="Book: A Gentle Introduction to Computer Algorithms">
+	  <p>Tatsuhiro Tsuchiya, A Gentle Introduction to Computer Algorithms, ISBN: 978-4320122444, Kyoritsu Shuppan, Tokyo, 2009.
+             (Japanese)
+          </p>

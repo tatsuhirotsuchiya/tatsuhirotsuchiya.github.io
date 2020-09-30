@@ -1,0 +1,14 @@
+﻿	  <h1>Biography</h1>
+	  <p>
+	    I am currently a professor
+	    of the Department of Information Systems
+	    Engineering at Osaka University.
+	    I received the
+	    M.E. and Ph.D. degrees from
+	    Osaka University in 1995 and
+	    1998, respectively. 
+	    My research interests are
+	    in the areas of model checking
+	    and distributed fault-tolerant
+	    systems. 
+	  </p>
