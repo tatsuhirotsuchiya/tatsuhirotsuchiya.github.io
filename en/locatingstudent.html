@@ -1,0 +1,202 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8>
+<!--
+<link rel="stylesheet" type="text/css" href="style.css">
+-->
+<script type="text/javascript">
+
+function checkAnswer() {
+  // n: num of columns  global variable
+  // num_row : num of rows global variable
+
+  // read the array from the table and store it into ary
+  var ary = new Array(num_row);
+  for (let row = 1; row <= num_row; row += 1) {
+    var r = new Array(n);
+    for (let column = 1; column <= n; column+=1) {
+//      var arr[row][column] =
+      r[column -1] =
+        parseInt(document.getElementById("slc-" + row + "-" + column).selectedIndex, 10) + 1;
+    }
+    ary[row - 1] = r;
+  }
+
+  // ary[row in 0..num_row-1][column in 0..n-1]
+
+  // read the pass-fail pattern
+  var passfail = new Array(num_row);
+  for (let row = 1; row <= num_row; row += 1) {
+    passfail[row - 1] = parseInt(document.getElementById("pf-" + row).selectedIndex, 10);
+  }
+
+  // インタラクションを探索
+  let message = "";
+  for (let p1 = 0; p1 < n - 1; p1 += 1) {
+    for (let p2 = p1 + 1; p2 < n; p2 += 1) {
+      for (let l1 = 1; l1 <= 2; l1 += 1) {
+        for (let l2 = 1; l2 <= 2; l2 += 1) {
+          // interaction: [l1@p1, l2@p2]
+          let suspicious = true;
+          for (let row = 0; row < num_row; row += 1) {
+            
+            // pass のテストにはいっていれば除外
+            // 0 = pass
+            if (passfail[row] == 0) {
+              if (ary[row][p1] == l1 && ary[row][p2] == l2) {
+                suspicious = false;
+                break;
+              }
+            }
+            // failのテストにはいっていなければ除外
+            else {
+              if (ary[row][p1] != l1 || ary[row][p2] != l2) {
+                suspicious = false;
+                break;
+              }
+            }
+          }
+          if (suspicious == true) {
+            message += "[" + String(l1) + "@" + String(p1+1) + "," + String(l2) + "@" + String(p2+1) + "]";
+          }
+        }
+      } 
+    }
+  }
+
+  let oldNode = document.getElementById("result");
+  let newNode = document.createElement('span');
+  let textNode = document.createTextNode(message);
+  newNode.id = "result";
+  newNode.appendChild(textNode);
+  oldNode.parentNode.replaceChild(newNode, oldNode);
+}
+
+function outputtable() {
+  // read the array from the table and store it into ary
+  var ary = new Array(num_row);
+  for (let row = 1; row <= num_row; row += 1) {
+    var r = new Array(n);
+    for (let column = 1; column <= n; column+=1) {
+//      var arr[row][column] =
+      r[column -1] =
+        parseInt(document.getElementById("slc-" + row + "-" + column).selectedIndex, 10);
+        // 0 か 1
+    }
+    ary[row - 1] = r;
+  }
+
+  // アレイを数値化
+  // 行の数 - パラメータ数 - 行1 - 行2 - ....
+  let displayarray = String(num_row) + "-" + String(n);
+  for (let row = 0; row < num_row; row += 1) {
+    let value = 0;
+    for (let column = 0; column < n; column += 1) {
+      value *= 2;
+      value += ary[row][column];
+    }
+    displayarray +="-" + String(value);
+  }
+
+  // 表示
+  let oldNode = document.getElementById("outputarray");
+  let newNode = document.createElement('span');
+  let textNode = document.createTextNode(displayarray);
+  newNode.id = "outputarray";
+  newNode.appendChild(textNode);
+  oldNode.parentNode.replaceChild(newNode, oldNode);
+}
+</script>
+</head>
+
+
+<form name="myForm">
+<input type="button" value="Check answer" onclick="checkAnswer()">
+</form>
+<p>推測される故障のインタラクション<br>
+  (P(成功)のテストになく，F(失敗)のテストにあるもの)<br>
+  <span id="result">（check answerをクリック）</span></p>
+
+<table id="myTable" border="1">
+</table>
+
+<form name="myForm2">
+  <input type="button" value="Output the table" onclick="outputtable()">
+</form>
+<p>数値化したテスト<br>
+<span id="outputarray">(Output the tableをクリック)</span></p>
+  
+<script type="text/javascript">
+
+// パラメータの総数
+  var n = 0;
+  while (n < 2 || n > 8 || !isFinite(n)) {  
+    n = parseInt(prompt('パラメータ数 (3～8) ?: '), 10);
+  }
+
+  // 行数の設定
+  var num_row;
+  if (n == 3) {num_row = 6;}
+  else if (n == 4)  {num_row = 7;}
+  else if (n == 5)  {num_row = 8;}
+  else if (n == 6)  {num_row = 9;}
+  else if (n == 7)  {num_row = 10;}
+  else if (n == 8)  {num_row = 11;}
+  else if (n == 9)  {num_row = 11;} // not reached
+  else if (n == 10)  {num_row =11;} // not reached
+  // else {assert(1); // error}
+ 
+  // 表の作成
+  var tbody = document.getElementById("myTable");
+  for (let row = 1; row <= num_row; row += 1) {
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    var txt = document.createTextNode(row);
+    td.appendChild(txt);
+    tr.appendChild(td);
+
+    for (var i = 1; i <= n; i += 1) {
+      td = document.createElement("td");
+      let slc = document.createElement("select");
+      //    chkbox.type = "checkbox";
+      slc.id = "slc-" + row + "-" + i;
+      // level: 1 or 2
+      for (let level = 1; level <= 2; level += 1) {
+        let opt = document.createElement("option");
+        opt.value = level;
+        opt.text = level;
+        slc.appendChild(opt);
+      }
+      td.appendChild(slc);
+      tr.appendChild(td);
+    }
+    // spacer
+    td = document.createElement("td");
+    txt = document.createTextNode("----");
+    td.appendChild(txt);
+    tr.appendChild(td);
+
+    // PかFを選択
+    td = document.createElement("td");
+    let slc = document.createElement("select");
+    slc.id = "pf-" + row;
+    let opt = document.createElement("option");
+    opt.value = 0;
+    opt.text = "P";
+    slc.appendChild(opt);
+    opt = document.createElement("option");
+    opt.value = 1;
+    opt.text = "F";
+    slc.appendChild(opt);
+    td.appendChild(slc);
+    tr.appendChild(td);
+
+    // 行を追加
+    tbody.appendChild(tr);
+  }
+// デバッグ用
+//  document.write(plugin1 + ", " + plugin2);
+</script>
+
+</html>
