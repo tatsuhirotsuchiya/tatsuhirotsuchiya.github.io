@@ -1,0 +1,593 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8>
+<!--
+<link rel="stylesheet" type="text/css" href="style.css">
+-->
+<script type="text/javascript"> 
+
+function checkAnswer() {
+  // n: num of columns  global variable
+  // num_row : num of rows global variable
+
+  // read the array from the table and store it into ary
+  var ary = new Array(num_row);
+  for (let row = 1; row <= num_row; row += 1) {
+    var r = new Array(n);
+    for (let column = 1; column <= n; column+=1) {
+//      var arr[row][column] =
+      r[column -1] =
+        parseInt(document.getElementById("slc-" + row + "-" + column).selectedIndex, 10) + 1;
+    }
+    ary[row - 1] = r;
+  }
+
+  // ary[row in 0..num_row-1][column in 0..n-1]
+
+  // read the pass-fail pattern
+  var passfail = new Array(num_row);
+  for (let row = 1; row <= num_row; row += 1) {
+    passfail[row - 1] = parseInt(document.getElementById("pf-" + row).selectedIndex, 10);
+  }
+
+  // インタラクションの配列
+  suspicious_interactions = [];
+  // インタラクションを探索
+  let message = "";
+  for (let p1 = 0; p1 < n - 1; p1 += 1) {
+    for (let p2 = p1 + 1; p2 < n; p2 += 1) {
+      for (let l1 = 1; l1 <= 2; l1 += 1) {
+        for (let l2 = 1; l2 <= 2; l2 += 1) {
+          // interaction: [l1@p1, l2@p2]
+          let suspicious = true;
+          for (let row = 0; row < num_row; row += 1) {
+            
+            // pass のテストにはいっていれば除外
+            // 0 = pass
+            if (passfail[row] == 0) {
+              if (ary[row][p1] == l1 && ary[row][p2] == l2) {
+                suspicious = false;
+                break;
+              }
+            }
+            // failのテストにはいっていなければ除外
+            else {
+              if (ary[row][p1] != l1 || ary[row][p2] != l2) {
+                suspicious = false;
+                break;
+              }
+            }
+          }
+          if (suspicious == true) {
+            message += "[" + String(l1) + "@" + String(p1+1) + "," + String(l2) + "@" + String(p2+1) + "]";
+            
+            let interactionobject = {"level1": l1, "level2": l2, "param1": p1+1, "param2": p2+1};
+            suspicious_interactions.push(interactionobject);
+          }
+        }
+      } 
+    }
+  }
+
+  /*
+  let oldNode = document.getElementById("result");
+  let newNode = document.createElement('span');
+  let textNode = document.createTextNode(message);
+  newNode.id = "result";
+  newNode.appendChild(textNode);
+  oldNode.parentNode.replaceChild(newNode, oldNode);
+*/
+
+  // table で表示
+  let newtable = document.createElement("table");
+  for (let interaction of suspicious_interactions) {
+    let tr = document.createElement("tr");
+    for (let j = 1; j < n+1; j++) {
+      let td = document.createElement("td");
+      let level = "";
+      if (interaction['param1'] == j) {
+        level = interaction['level1'];
+      }
+      else if (interaction['param2'] == j) {
+        level = interaction['level2'];
+      }
+      let entrystring;
+      if (level == 1) entrystring = "　A　"
+      else if (level == 2) entrystring = "　B　"
+      else entrystring ="　---　"
+      txt = document.createTextNode(entrystring);
+      td.appendChild(txt);
+      tr.appendChild(td);
+    }
+    newtable.appendChild(tr);
+  }
+  newtable.id = "ansTable";
+  newtable.border = "4";
+
+  let oldtable = document.getElementById("ansTable");
+  oldtable.parentNode.replaceChild(newtable, oldtable);
+
+  sound_beep()
+}
+
+function outputtable() {
+  // read the array from the table and store it into ary
+  var ary = new Array(num_row);
+  for (let row = 1; row <= num_row; row += 1) {
+    var r = new Array(n);
+    for (let column = 1; column <= n; column+=1) {
+//      var arr[row][column] =
+      r[column -1] =
+        parseInt(document.getElementById("slc-" + row + "-" + column).selectedIndex, 10);
+        // 0 か 1
+    }
+    ary[row - 1] = r;
+  }
+
+  // アレイを数値化
+  // 行の数 - パラメータ数 - 行1 - 行2 - ....
+  let displayarray = String(num_row) + "-" + String(n);
+  for (let row = 0; row < num_row; row += 1) {
+    let value = 0;
+    for (let column = 0; column < n; column += 1) {
+      value *= 2;
+      value += ary[row][column];
+    }
+    displayarray +="-" + String(value);
+  }
+
+  // 表示
+  let oldNode = document.getElementById("outputarray");
+  let newNode = document.createElement('span');
+  let textNode = document.createTextNode(displayarray);
+  newNode.id = "outputarray";
+  newNode.appendChild(textNode);
+  oldNode.parentNode.replaceChild(newNode, oldNode);
+  sound_cat();
+ 
+}
+</script>
+</head>
+
+
+<form name="myForm">
+<input type="button" value="Check answer" onclick="checkAnswer()">
+</form>
+<p>推測される故障のインタラクション<br>
+  (どの成功のテストにもなく，失敗のテストすべてにあるもの)<br>
+  <span id="result">（check answerをクリック）</span></p>
+
+<table id="ansTable" border="1">
+</table>
+<p></p>
+
+<table id="myTable" border="10">
+</table>
+
+<p></p>
+
+<form name="myForm2">
+  <input type="button" value="Output the table" onclick="outputtable()">
+</form>
+
+<p>数値化したテスト<br>
+<span id="outputarray">(Output the tableをクリック)</span></p>
+  
+<script type="text/javascript">
+
+// パラメータの総数
+  var n = 0;
+  while (n < 3 || n > 8 || !isFinite(n)) {  
+    n = parseInt(prompt('パラメータ数 (3～8) ?: '), 10);
+  }
+
+  // 行数の設定
+  var num_row;
+  if (n == 3) {num_row = 6;}
+  else if (n == 4)  {num_row = 7;}
+  else if (n == 5)  {num_row = 8;}
+  else if (n == 6)  {num_row = 9;}
+  else if (n == 7)  {num_row = 10;}
+  else if (n == 8)  {num_row = 11;}
+  else if (n == 9)  {num_row = 11;} // not reached
+  else if (n == 10)  {num_row =11;} // not reached
+  // else {assert(1); // error}
+ 
+  // 表の作成
+  var tbody = document.getElementById("myTable");
+  for (let row = 1; row <= num_row; row += 1) {
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    var txt = document.createTextNode(row);
+    td.appendChild(txt);
+    tr.appendChild(td);
+
+    for (var i = 1; i <= n; i += 1) {
+      td = document.createElement("td");
+      let slc = document.createElement("select");
+      //    chkbox.type = "checkbox";
+      slc.id = "slc-" + row + "-" + i;
+      // level: 1 or 2
+      for (let level = 1; level <= 2; level += 1) {
+        let opt = document.createElement("option");
+        opt.value = level;
+        opt.text = level;
+        // A or B
+        opt.text = String.fromCharCode("A".charCodeAt(0) + level - 1);
+        slc.appendChild(opt);
+      }
+      td.appendChild(slc);
+      tr.appendChild(td);
+    }
+    // spacer
+    td = document.createElement("td");
+    txt = document.createTextNode("----");
+    td.appendChild(txt);
+    tr.appendChild(td);
+
+    // PかFを選択
+    td = document.createElement("td");
+    let slc = document.createElement("select");
+    slc.id = "pf-" + row;
+    let opt = document.createElement("option");
+    opt.value = 0;
+    opt.text = "☺";
+    slc.appendChild(opt);
+    opt = document.createElement("option");
+    opt.value = 1;
+    opt.text = "💣";
+    slc.appendChild(opt);
+    td.appendChild(slc);
+    tr.appendChild(td);
+
+    // 行を追加
+    tbody.appendChild(tr);
+  }
+// デバッグ用
+//  document.write(plugin1 + ", " + plugin2);
+
+function sound_beep() {
+    new Audio("data:audio/wav;base64,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").play();
+}
+
+function sound_cat() {
+   
+  //new Audio('.\cat-call-meow-102607.mp3').play();
+  var base64 = '\
+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\
+/dv////////wM5DLvp7//duf///////yakkv09//pHyqTEFNRTMuMTAwqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpkpgCA\
+IhAhwkB7iN0deLKNIrBALGGCZGTILAYLlGVDV3qMv+u1dqBRguCxiWPxnLWxucGB\
+gXg2GACBcYF4AAhAADgAlSlgBctKWlMBYBcwMASzHOJQMOUJgwZQSjAxAWLAC5YA\
+wAgC5YAXAwMBaYtKBQSzAXAWMYAEssALIFFgBcwFgFwKAuWlLTIFFpAKAuYC4GBg\
+lglGQ4EyYGAMhaYDAXFgBcDAWGAuAsBAFwMBYBgYTBLAWMBcGQDB/GrmLOYZoGIF\
+//PkZMQx6dM4AO74AAAAA0gBwAAAAWAwFxgYALgYGBNny0qbKBZaUwMQSjDNBkME\
+sBYDAXIFgUBYtN6BRaZNlNkCgLmD+JkVjAGDIAuBgYSsBZAsDAXIFlpi03lpC0pg\
+lB/mIyD8YMgJZgYALAYC0tJ6bKBZaT/MBcBcsBZFYGBgLgLgQBctL6bPoFoFegUW\
+ASjCzCZMDABcwFgF02S0ybKBabH//lpDAxAXQLLSpsf/////lgAtFf///////RX/\
+///////U4//////+Sf8m//kkn///5LJ//////3/9skmqTEFNRTMuMTAwqqqqqqqq\
+qqqqqiEVDAyE3MDMB4WBVKwH1EFIF+mkKNKNlgB4sGUGFUC0EALvgkYzlJJJBnLO\
+kVTALAKMEYIMyxUzTLsBvMB8KosBVBARqnKnBYAKCgLRYALCoBRgPgFGC0COZ+IQ\
+RivAjGEGA+FQCjCDAKMAoB4sAFGAWA8EAKGCMDeYGYGZgjBVmEsC2Z+IhxgPgZBA\
+W5YAeKwMjAyAfCAZwoBkpwYBQQZgtgjGC2EsYc4S5tMkmmJGGkiqFQRysDMwCgCz\
+AzAKMEYB4KgPmCMC2FAbzAyC+MNJVkxNjPDBbCrMEYDIwCgHzEcHysHysHwgFAgF\
+//PkZOw27esuUHuz1gAAA0gAAAAAzAoHgoBRg8D5g8aRpsN5lUGZgUD5gUI5gUD5\
+YAtRtRowKAoKAUo0YFiOYZU4VrkFBb8wfDIID4KA+FAfRXCAUCA9CA9LAtmVQFGw\
+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\
+VgXRWBdlYCd5YATisEV/ysEVLASOYSOLuGG8pgJjUoF2VgkxgXYF2YF0AnmAngJ5\
+WAnFgBOMBOAuysEULASMYIqCKmEjCVZkuShmY4eEj+YIqEjeYEyBM+VgTHlgFOLA\
+//PkZLQwAg0cAHv2agAAA0gAAAAAKcVgpxgTAbgYKcVFGECgp5WBMAwTIRExwiJn\
+AxMiYAxMIFA0CWTA5ulPAxMlPCImQMTAmODBMYGJkTIGJkpwGU4TIG3ETIREz/gZ\
+FSKgwigGRSVYGRSVQGkYin8IkUwNI8qgPh6RwMihFP+BkUIoBkVSMDG8gaRkjfwi\
+JgIiZAxMCZAynoEA0CCZA0ClPBgmf/hETH/wMEYYgMEQIgYCL///wYCMIgiBgLwM\
+F4LwYAn+DAEBEBGDAE/8GAJBgCf//HNJfJclyX//xWSXTEFNRTMuMTAwqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqKw4sMhhwcZ2yHeHZnUgZ+IKmLAB/lizLAfcY\
+MAEo+BQBctImymymwmymx/lgCzMGAEvDQEAYAwWYDlMAxAzTASwEoDAFpaYDAFn/\
+/mBZgWRhKAfcYY+ZqAcdwWgwOgGC0FgMBYBgtDqEQWwiC3CIswiLIDfdL0D5WlAI\
+//PkZHso2g0iAG/2OgAAA0gAAAAAizAxZCzBgs/Bgs4MFmBpRMABmAsYB2NFkDBZ\
+wYF/+DAvhEqoHDYqgGF8L0DBYC0GAswYC2DAWgYLQWAYLQWgYdCDAadk7gYdQWcD\
+C8F7gwL0GBfAxsrHAznlVA0lDZwiF4GBfgwL4RC8BheC+BheC+ERZAYs0ogaUX3g\
+cvBZgwWf8GCzgYshZAZgBZAbHjAgwWX/gYXwvgZVBsAwL////wiA4DAeA4GAO///\
++BgOAcDYMCIFguv/hhsGwb/ww4XX//8ixb8sfLP+OWReTEFNRTMuMTAwqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqv8wTgujBPC6KwTjBPBPBoCK\
+jIMAm/ywCeYpyyRWyT5gEAElgAj/8rAJMAgAj/MJkJgyuvhDWSNxLAkhjygxmHKB\
+EYEQEXlgCLywEwVhMFYTBhMkCGQKbgfwibphjAqGEGAgYNQCAOBOLAKpgqgIlYCI\
+//PkZHEnjb8gAHrUugAAA0gAAAAAMAm8wmQmSwKeZApuJ37kCGQKEwWAmTCYCZMJ\
+kJgGCYBgmcIiZwNAhTgNXYmAMTJTv+EQnAYTzJAZ/k1gZkhd/+ERMAaBRMgYmSnA\
+wTP/CImANuCBQYJkDEwJmDBMfCImQMTAmQMTKBQOyTcQNAgmQNXQmQiJjgwTPhET\
+AGgUp4GJgp4REx/BgTwYE6BkmP8Bi6CeBi6Cf/4GE4JwMCf/4REgYlcDBIMEf8Ii\
+ANcIBgmDBH+ERIGJEgwSHkCyP/hZEHlDyf8PIBkCIWRVTEFNRTMuMTAwVVVVVVVV\
+VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\
+VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\
+VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\
+VVVVVVVVVVVVVWAlpAIWAuQwKArIFZAQATAgRCA/ywsMF40ArLH9Un/6p2qNV8sA\
+vlYL5hsuNGOcOeYzQXxiDgWmDqBaYFgFhWBYWALCwC//lYL5YDYMVQVQ2JA2TCZB\
+//PkZFYkLf0sUWvVPwAAA0gAAAAALLSoFJseBQMAMBYYC4GBYBeMF4F4sAvmGyhu\
+a1ILxWGwVgvlgF/+ERYBi0WQYLQM6nQDOp1BgsBgs+DYPC6wXXDDAYXTAGMRiAM/\
+gYFv8DBwOAx2DwN0mQDBwO/hEHhEHgYOBwGZDIEV6BmUHhEHQYDvCIOAwcOgYDwj\
+VQOq1UGNkGF7/gwvgbZL3+EQeBg8HhEHAY6HQGvEiDDJ/wMHA4GA4DBwP/8MMDYN\
+BgW/8MMF1gbBv/wwwXXDDiqFX///xWAGgF/8s//LH8tqTEFNRTMuMTAwqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqosET1kTIPAdNB0\
+5AODkSjH+aNGaLEYUZkxiShRFYEaARRNRj1E1EkAvmCcCcYXQJ5oOk1GaIMkYKgh\
+RiFhXGB4CqYHgE6AUGgTeWATywCeYJwJ5iThdmnqTWZNQJ5hRgxFgCP/8sARmBGB\
+//PkZGomwb0qAGvVPgAAA0gAAAAAGYEYcpgngnGF0JMYkxNZmiIOGJOCeYXQXflg\
+E8rBOBgjBgiAxEIgYIwiIgiIgiYwNyqIDERj/AwQCAMEC8GAmET0BqMqgYvBEGAj\
++BiIRBExAwxgYiEfCIi4RJ0DJxOAyfJgYugYTwYT8Ik/hEngwngwnga6k4GT5OBy\
+cnBEngZOJ/8Ik8GLoDJ5P/4REcDcoiAxEYgMxmIGCIGCPgwRwYIgiIgMRiIDMYjB\
+gj/8PIFkAeULIv8LIgiEQ8wecLI///+SoYsJeS//yVHNTEFNRTMuMTAwqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqMEAnMVEK\
+Bw8DwyGEYNhwbLcvp1GBIElgCTAk7jKNrTC8LysCWTv4/v+YEAQWAJLAnmJ7JGyV\
+smJ1smkxdmBIEGF4XlgCPLAElgLvLAnGXSTmkz/mk7JmkyTGJ6TmMYR+VhH/lgIz\
+//PkZGYmKb0uAHdUsgAAA0gAAAAACMIjKIYzE5/jLsTzSZ/zE4uywJxWJ//5WJKx\
+BWJNcvNeuMQuMTVMRVNcJKxP//g1OadObxMZEgZEiDkYORIB1GP8IogYj8GIuDEY\
+GiRgc+cBzp4MnhGcDJwMnAyd4HOngc+dCM/Bk8DnzgNHjA8aKDEQHjRAeJGBo0QG\
+jRAxEEUYRRBFFgxEEUUIooRRcGIoHiRwYjgxEDEcDRI4MRgxHCKIIogijCKIIo//\
+CyILIfw8weYPKHnDyB5Q8n+Hm/8lMlCX//kqS3+jUvpqTEFNRTMuMTAwqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqMHDo0hEz\
+Bw7MXF43w+DEAAIgCXZLrmD16bpB5z5eH4/EVwfw4B+1UsA/zHToNIL0rg5YX5iz\
+NGv4MZ1FhYFv+Z0XxiyDnUV+WF+cHX5i2DmLTqZ0g5wY6Gv4MZ1OhwaDGdV+Z1Fh\
+//PkZGYmJZcuAHN0qgAAA0gAAAAAYFvmLBYVi0ywtN0LDdSw74sLDqVupYLCss//\
+MODisOM6DywHlgPLAeWA////MPD/8w8OKw/ysOKw7/8rDzDw8w8OKw4w8O8w4P8s\
+B3/5YDzDw4w4P8sFnmWlhlpaWC0rLPKy3ystKy0sFnmWlhYLTdL8rLDLCxNgsCxi\
+wumygWBi1Nn0CkCgMW/6bKBfps//+WmQLwYPgwfBg6DB0IugiPAxw8DHDwN2OBg4\
+DHDgiPBg8DHDvww4YeF1sGwZhhoNg0GwaF1oYf///j9VTEFNRTMuMTAwVVVVVVVV\
+VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\
+VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\
+VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUBiwNjRKIMbjcwAkjL\
+EnKwAFQEYgOhkoBGNhscwGx4TrnhBsVjf3LcsZBpYG5jcbmN24aJRBt0bnMesbdb\
+pohEmNht5jYbGiBsY3GxzFEmNhsaIRJYbpojCHMESaIGxjZEFhElY2MbogxuiCsb\
+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\
+zSTxIZAQemYjqacnmnrh0C4B18CoBhU8ACEyoXFAIyc0MKTzdwsrGTTUwmeDBjsy\
+0USpZwpsjaAAosGpmpOYWaCTSYsSCwgAlRKEw0ZQkGJkSCIwkGSSLIgFBMKGREFF\
+YWAmgmGQsBmQkI0BlgXVoS2DAILBfWklwTCgoBGCBMCBQBC2yexMaGlVTAwFnAUD\
+BYCzVtLurxRRhxkJhYWu8vuWZKxlCtdgjCmyFpBgKFRoRDIGFBUKAQqIQ1CZCEqo\
+//PkZOg2ch0EZM5sAAAAA0gBgAAAk5TWqBYZ5niXcu9d67F2rtXa2dd6BFs/odyy\
+exGFsOIQEWGisKSyQnFpGHNOZjEoml7XWFdV4WmtylLZWy+2Yv2X6bK2VsrZ2yLs\
+L9rubM2dAx7VSNAbOizG1jtcIQFq7d2JkgWX7qRxYas7TlRJ3s4lImk5R1W2AWur\
+tbMX3bKu8vo2ZshfVdzZ2zNkbM2T12Nm//9DxAmjAgSQRLsbGsS61NzWAqnliI8D\
+KDtUZFA8QhyHX1hLSsYCZ1NP9amoejsqm2UymHbNWW3FTEFNRTMuMTAwVVVVVVVV\
+VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\
+VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\
+VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUErHXs\
+fvh60GyMxMCCmQWZAquo7AANEMs4ywkqzQjOicoKMp04nzUHWYWqLRNnYaziuhqR\
+DRwqlFCFBImgtxlHqF6EhQgCeAARtAmgDoOpdj0mSih6mglQmwuRLlUpSUj0uSdU\
+//PkZGQl7hS8AOy8AIAAA0gBwAAALUcxcnMlImrSSkhKynjSWi+j0tJfR6TJcYTN\
+Gz4LChqGqGAW4hTo5jqdp00XE/idOJ/GkqrsMVuV1E8aR1KKNBTqGzsMVuOY6o5P\
+R6WkvpOVDIrnJhQ2dOmidKhiwk8h00KNBTqhiHMTp0fx1M0FWxWJDpk8hyungxa/\
+2fMSuZpU6dM6dUNE8opz9Li7P00VDR9Gy929VqtVsWRPIdMxK67CrZk8dUyeQ5my\
+9i4fahMTM+jZeq3dawmJmunUNnUqGsuH0bL3cF7FrkFKTEFNRTMuMTAwqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq\
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq';
+var sound = new Audio("data:audio/wav;base64," + base64);
+sound.play();
+}
+</script>
+
+</html>
