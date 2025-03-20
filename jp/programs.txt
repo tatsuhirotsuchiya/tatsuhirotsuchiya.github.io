@@ -1,7 +1,0 @@
-	  <h1>プログラム</h1>
-          <ul>
-	  <li><a href="../CIT/">組合せテスト作成ツールCIT-BACH</a></li>
-	  <li><a href="http://www-ise4.ist.osaka-u.ac.jp/~t-tutiya/IPL2002/">ペアワイズテスト用テストケース生成ツール</a></li>
-	  <li><a href="http://www-ise4.ist.osaka-u.ac.jp/~t-tutiya/ATVA2004/">ペトリネットに対する有界モデル検査ツール</a></li>
-	  <li><a href="http://www-ise4.ist.osaka-u.ac.jp/~t-tutiya/sources/">その他</a></li>
-          </ul>
